@@ -1,11 +1,15 @@
-"use client"
+"use client";
 
+import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Navbar from "@/components/Navbar";
+import { callAPI } from "@/config/axios";
 
+interface ISignUpProps {}
 
-const Register: React.FC = () => {
+const Register: React.FunctionComponent<ISignUpProps> = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,12 +21,19 @@ const Register: React.FC = () => {
 
   const router = useRouter();
 
-
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
     // untuk registrasi
-    console.log("Registering", { firstName,lastName, email, phone, password, countryCode, agreed });
+    console.log("Registering", {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      countryCode,
+      agreed,
+    });
 
     // ini untuk reset form nya
     setFirstName("");
@@ -33,16 +44,41 @@ const Register: React.FC = () => {
     setCountryCode("");
   };
 
+  const onSignUp = async () => {
+    try {
+      const res = await callAPI.post("/users", {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+
+      console.log("CHECK SIGN UP RESPONSE :", res.data);
+      localStorage.setItem("dataUser", JSON.stringify(res.data[0]));
+      // Redirect setelah sukses registrasi
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <form
-    className="border-2 border-gray-300 rounded-lg p-6 max-w-md mx-auto shadow-lg"
-    onSubmit={handleRegister}
-  >
-    <h2 className="text-xl font-semibold mb-4">Sign Up Now</h2>
-    
-    <div className="flex mb-4">
+    // <div>
+    //   <Navbar />
+    <div
+      className="border-2 border-gray-300 rounded-lg p-6 max-w-md mx-auto shadow-lg mt-10"
+      onSubmit={handleRegister}
+    >
+      <h2 className="text-xl font-semibold mb-4">Sign Up Now</h2>
+
+      <div className="flex mb-4">
         <div className="w-1/2 pr-2">
-          <label className="block text-sm font-medium mb-1" htmlFor="first-name">First Name</label>
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="first-name"
+          >
+            First Name
+          </label>
           <input
             id="first-name"
             type="text"
@@ -53,7 +89,9 @@ const Register: React.FC = () => {
           />
         </div>
         <div className="w-1/2 pl-2">
-          <label className="block text-sm font-medium mb-1" htmlFor="last-name">Last Name</label>
+          <label className="block text-sm font-medium mb-1" htmlFor="last-name">
+            Last Name
+          </label>
           <input
             id="last-name"
             type="text"
@@ -66,7 +104,9 @@ const Register: React.FC = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+        <label className="block text-sm font-medium mb-1" htmlFor="email">
+          Email
+        </label>
         <input
           id="email"
           type="text"
@@ -79,31 +119,35 @@ const Register: React.FC = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="phone">Phone Number</label>
+        <label className="block text-sm font-medium mb-1" htmlFor="phone">
+          Phone Number
+        </label>
         <div className="flex">
-        <select
-        onChange={(e) => setCountryCode(e.target.value)}
-        className="border border-gray-300 rounded-l-md p-2"
-        >
+          <select
+            onChange={(e) => setCountryCode(e.target.value)}
+            className="border border-gray-300 rounded-l-md p-2"
+          >
             <option value="+62">+62</option>
             <option value="+1">+1</option>
             <option value="+44">+44</option>
             <option value="+91">+91</option>
-        </select>
-        <input
-          id="phone"
-          type="text"
-          placeholder="Type your phone number"
-          className="border border-gray-300 rounded-md p-2 w-full"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-        />
-      </div>
+          </select>
+          <input
+            id="phone"
+            type="text"
+            placeholder="Type your phone number"
+            className="border border-gray-300 rounded-md p-2 w-full"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
       </div>
 
       <div className="mb-7 relative">
-        <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+        <label className="block text-sm font-medium mb-1" htmlFor="password">
+          Password
+        </label>
         <input
           id="password"
           type={showPassword ? "text" : "password"}
@@ -114,43 +158,47 @@ const Register: React.FC = () => {
           required
         />
         <span
-        className="absolute right-3 top-1/2 transform -translate-y-5 cursor-pointer"
-        onClick={() => setShowPassword(!showPassword)} //toggle untuk password
+          className="absolute right-3 top-1/2 transform -translate-y-2 cursor-pointer"
+          onClick={() => setShowPassword(!showPassword)} //toggle untuk password
         >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
         </span>
-        <p className="text-sm text-gray-600 mt-1">use 6 or more characters with a mix of letter, number & symbols</p>
+        <p className="text-sm text-gray-600 mt-1">
+          use 6 or more characters with a mix of letter, number & symbols
+        </p>
       </div>
 
-    <div className="mb-4">
-        <input 
-        type="checkbox"
-        id="terms"
-        checked={agreed}
-        onChange={(e) => setAgreed(e.target.checked)}
-        required
-        className="mr-2"
+      <div className="mb-4">
+        <input
+          type="checkbox"
+          id="terms"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+          required
+          className="mr-2"
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
-            By creating an account, i agree to our Terms of use and Privacy Policy
+          By creating an account, i agree to our Terms of use and Privacy Policy
         </label>
-    </div>
+      </div>
 
       <button
         type="submit"
         className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+        onClick={onSignUp}
       >
         Sign up now
       </button>
       <div className="mt-4 text-center">
         <span
-        className="text-sm text-blue-500 cursor-pointer"
-        onClick={() => router.push('/login')}
+          className="text-sm text-blue-500 cursor-pointer"
+          onClick={() => router.push("/login")}
         >
-            Already have an account? Log in
+          Already have an account? Log in
         </span>
       </div>
-    </form>
+    </div>
+    // </div>
   );
 };
 

@@ -5,6 +5,7 @@ const Home = () => {
     <div className="border-2 border-black rounded-lg p-5 inline-block">
       <a href="./login">Login</a>
       <a href="./register">SignUp</a>
+      <a href="./post">Post</a>
     </div>
   );
 };
