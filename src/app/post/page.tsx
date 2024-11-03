@@ -24,12 +24,13 @@ const App: React.FC = () => {
   const [stories, setStories] = useState<string[]>([]);
 
   useEffect(() => {
+    // pake asynchronous
     const fetchUsers = async () => {
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/users"
       );
-      const data = await response.json();
-      setUsers(data);
+      const data = await response.json(); // ini ngekonversi respons menjadi format JSON
+      setUsers(data); // lalu disimpan datanya yang diambil ke dalam state users
     };
 
     const fetchPosts = async () => {
@@ -55,13 +56,20 @@ const App: React.FC = () => {
     }
   };
 
+  //untuk ngehapus story berdasarkan indeksnya
   const handleDeleteStory = (index: number) => {
     setStories(stories.filter((_, i) => i !== index)); // Menghapus cerita berdasarkan index
   };
+  // setStories untuk memperbarui state stories
+  // pakai filter buat bikin array baru dngn elemen yang memenuhi kondisi yang diberikan
+  // ketika setiap elemen yang indeksnya ga sama dengan index yang diterima, akan dimasukkan kedalam array baru
 
+  // untuk ngehapus berdasarkan ID
   const handleDeletePost = (id: number) => {
     setPosts(posts.filter(post => post.id !== id));
   };
+  // kalo setiap postingan ID yang gasama dengan id yang diterima, akan dimasukkan kedalam array baru
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen">

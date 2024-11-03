@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { callAPI } from "@/config/axios";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setSignIn } from "@/lib/redux/features/userSlice"
+
 interface ISignInProps {}
 
 const Login: React.FunctionComponent<ISignInProps> = (props) => {
@@ -13,12 +16,16 @@ const Login: React.FunctionComponent<ISignInProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  // Define dispatch from useAppDispatch for execute function actions from redux
+  const dispatch = useAppDispatch();
+
   const onSignIn = async () => {
     try {
       const response = await callAPI.get(
         `/users?email=${username}&password=${password}`
       );
       console.log("CHECK SIGN IN RESPONSE:", response.data);
+      dispatch(setSignIn(response.data[0])); //store data to global store redux
       localStorage.setItem("dataUser", JSON.stringify(response.data[0]));
       router.push("/"); // Ganti dengan path yang sesuai
       // Reset form
@@ -53,7 +60,9 @@ const Login: React.FunctionComponent<ISignInProps> = (props) => {
         />
       </div>
       <div className="mb-7 relative">
-        <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+        <label className="block text-sm font-medium mb-1" htmlFor="password">
+          Password
+        </label>
         <input
           id="password"
           type={showPassword ? "text" : "password"}
@@ -70,18 +79,18 @@ const Login: React.FunctionComponent<ISignInProps> = (props) => {
           {showPassword ? <FaEyeSlash /> : <FaEye />}
         </span>
       </div>
-      
-      <button 
+
+      <button
         type="submit"
         className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
       >
         Login
       </button>
-      
+
       <div className="mt-4 text-center">
         <span
           className="text-sm text-blue-500 cursor-pointer"
-          onClick={() => router.push('/register')}
+          onClick={() => router.push("/register")}
         >
           Don't have an account? Sign Up
         </span>
@@ -91,12 +100,6 @@ const Login: React.FunctionComponent<ISignInProps> = (props) => {
 };
 
 export default Login;
-
-  
-
-
-
-
 
 //contoh dari ka abdi
 // const SignIn:  = (props) => {
