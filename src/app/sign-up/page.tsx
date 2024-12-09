@@ -11,16 +11,23 @@ import { SignUpSchema } from "./SignUpSchema";
 import { ISignUpValue } from "./type";
 
 interface ISignUpPageProps {}
-
+interface FormValue {
+  fullname: string;
+  username: string;
+  email: string;
+  password: string;
+}
 const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
-  const onSignUp = async (formValue: ISignUpValue) => {
+  const onSignUp = async (values: FormValue) => {
     try {
       // Lengkapi fungsi ini hingga bisa menambah data ke file db.json
-      const res = await callAPI.post("/users", {
-        name: `${formValue.firstName} ${formValue.lastName}`,
-        email: formValue.email,
-        password: formValue.password,
+      const res = await callAPI.post("/user/register", {
+        fullname: values.fullname,
+        username: values.username,
+        email: values.email,
+        password: values.password,
       });
+      alert(res.data.message);
     } catch (error) {
       console.log(error);
     }
@@ -46,8 +53,8 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
             <Formik
               validationSchema={SignUpSchema}
               initialValues={{
-                firstName: "",
-                lastName: "",
+                fullname: "",
+                username: "",
                 email: "",
                 password: "",
                 confPassword: "",
@@ -60,27 +67,29 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
             >
               {(props: FormikProps<ISignUpValue>) => {
                 const { values, handleChange, errors, touched } = props;
+                console.log("error formik", errors);
+
                 return (
                   <Form>
                     <div className="py-2 md:py-6 space-y-5">
                       <div className="flex gap-8">
                         <FormInput
-                          id="firstName"
+                          name="fullname"
                           type="text"
                           label="First name"
                           onChange={handleChange}
-                          value={values.firstName}
+                          value={values.fullname}
                         />
                         <FormInput
-                          id="lastName"
+                          name="username"
                           type="text"
-                          label="Last name"
+                          label="Username"
                           onChange={handleChange}
-                          value={values.lastName}
+                          value={values.username}
                         />
                       </div>
                       <FormInput
-                        id="email"
+                        name="email"
                         type="text"
                         label="Email"
                         onChange={handleChange}
@@ -88,7 +97,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
                       />
                       <p className="text-red-500">{errors.email}</p>
                       <FormInput
-                        id="password"
+                        name="password"
                         type="password"
                         label="Password"
                         onChange={handleChange}
@@ -96,7 +105,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
                       />
                       <p className="text-red-500">{errors.password}</p>
                       <FormInput
-                        id="confPassword"
+                        name="confPassword"
                         type="password"
                         label="Confirmation Password"
                         onChange={handleChange}

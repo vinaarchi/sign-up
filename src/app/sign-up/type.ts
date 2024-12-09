@@ -1,6 +1,6 @@
 export interface ISignUpValue {
-  firstName: string;
-  lastName: string;
+  fullname: string;
+  username: string;
   email: string;
   password: string;
   confPassword: string;

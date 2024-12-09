@@ -9,6 +9,7 @@ import { useAppDispatch } from "@/lib/redux/hooks";
 import { setSignIn } from "@/lib/redux/features/userSlice";
 import { useRouter } from "next/navigation";
 import { getPostsList } from "@/lib/redux/features/postSlice";
+import { Button } from "@/components/ui/button";
 
 interface ISignInPageProps {}
 
@@ -22,11 +23,10 @@ const SignInPage: React.FunctionComponent<ISignInPageProps> = (props) => {
 
   const onSignIn = async () => {
     try {
-      const response = await callAPI.get(
-        `/users?email${email}&password=${password}`
-      );
+      const response = await callAPI.post(`/users/login`, { email, password });
       console.log("CHECK SIGNIN RESPONSE :", response.data);
       dispatch(setSignIn({ ...response.data[0], isAuth: true }));
+      localStorage.setItem("tkn", response.data.token);
       dispatch(getPostsList);
       router.replace("/posts");
     } catch (error) {
@@ -40,25 +40,25 @@ const SignInPage: React.FunctionComponent<ISignInPageProps> = (props) => {
         <h1 className="text-2xl">Sign in </h1>
         <div className="py-6 space-y-5">
           <FormInput
-            id="email"
+            name="email"
             type="text"
             label="Email"
             onChange={(e: any) => setEmail(e.target.value)}
           />
           <FormInput
-            id="password"
+            name="password"
             type="password"
             label="Password"
             onChange={(e: any) => setPassword(e.target.value)}
           />
           <div className="flex items-center gap-4">
-            <button
-              type="button"
+            <Button
+              type="submit"
               className="bg-gray-400 text-white px-4 py-2 rounded-full shadow"
               onClick={onSignIn}
             >
               Sign In
-            </button>
+            </Button>
           </div>
         </div>
       </div>

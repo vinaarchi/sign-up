@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 interface IFormInput {
-  id: string;
+  id?: string;
   type: string;
+  name: string;
   label?: string;
   placeholder?: string;
   onChange?: (e: any) => void;
@@ -14,6 +15,7 @@ interface IFormInput {
 const FormInput: React.FC<IFormInput> = ({
   id,
   type,
+  name,
   label,
   placeholder,
   onChange,
@@ -36,8 +38,8 @@ const FormInput: React.FC<IFormInput> = ({
         <label className="font-semibold">{label}</label>
         <div className="relative">
           <input
-            id={id}
-            name={id}
+            id={name}
+            name={name}
             ref={ref}
             type={activeType}
             placeholder={placeholder}
@@ -60,8 +62,8 @@ const FormInput: React.FC<IFormInput> = ({
     <div className="flex flex-col w-full gap-2">
       <label className="font-semibold">{label}</label>
       <input
-        id={id}
-        name={id}
+        id={name}
+        name={name}
         type={type}
         placeholder={placeholder}
         className="w-full border border-gray-300 px-3 py-1 rounded-md shadow-md"
